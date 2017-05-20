@@ -1,0 +1,76 @@
+{
+    "logging": {
+        "level": "debug",
+        "requests": true,
+        "responses": true
+    },
+    "servers": [
+        {
+            "name": "svr00",
+            "type": "libstorage",
+            "addrs": [
+                "tcp://127.0.0.1:7979"
+            ]
+        },
+        {
+            "name": "svr01",
+            "type": "csi",
+            "addrs": [
+                "tcp://127.0.0.1:8989",
+                "unix:///tmp/lsx/run/csi.sock"
+            ]
+        }
+    ],
+    "services": [
+        {
+            "name": "svc00",
+            "servers": [
+                "svr00",
+                "svr01"
+            ],
+            "logging": {
+                "level": "info",
+                "requests": true,
+                "responses": true
+            },
+            "api": {
+                "volume": {
+                    "attach": {
+                        "type": "vfs"
+                    },
+                    "mount": {
+                        "type": "libstorage",
+                        "host": "tcp://192.168.0.192:7979"
+                    }
+                }
+            }
+        }
+    ],
+    "modules": [
+        {
+            "path": "/tmp/lsx/lib/mods/config.so"
+        },
+        {
+            "path": "/tmp/lsx/lib/mods/logger.so"
+        },
+        {
+            "path": "/tmp/lsx/lib/mods/mock-client.so",
+            "names": [
+                "libstorage"
+            ]
+        },
+        {
+            "path": "/tmp/lsx/lib/mods/mock-server.so",
+            "names": [
+                "csi",
+                "libstorage"
+            ]
+        },
+        {
+            "path": "/tmp/lsx/lib/mods/mock-volume-driver.so",
+            "names": [
+                "vfs"
+            ]
+        }
+    ]
+}
